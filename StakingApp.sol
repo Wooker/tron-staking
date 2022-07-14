@@ -37,45 +37,40 @@ contract StakingApp {
         lockPeriods.push(10);
     }
     
-    function makeStake(uint mins) external payable {
+    function makeStake(uint amount, uint mins) public payable returns(uint id) {
         require(interestRates[mins] > 0, "No such mapping");
+        id = currentStakingId;
         
-        stakes[currentStakingId] = Staking(
+        stakes[id] = Staking(
             currentStakingId,
             msg.sender,
             block.timestamp,
             block.timestamp + (mins * 1 minutes),
             interestRates[mins],
-            msg.value,
-            calculateInterest(interestRates[mins], mins, msg.value),
+            amount * 1 trx,
+            calculateInterest(interestRates[mins], amount),
             true
         );
         
         stakingIdsByAddress[msg.sender].push(currentStakingId);
         currentStakingId += 1;
+        
+        return id;
     }
     
-    function calculateInterest(uint rate, uint mins, uint amount) private pure returns(uint) {
-        return rate * amount / 10000;
+    function calculateInterest(uint rate, uint amount) private pure returns(uint) {
+        return rate * amount / 10000 * 1 trx;
     }
     
-    function getLockPeriods() external view returns(uint[] memory) {
-        return lockPeriods;
-    }
-    
-    function getInterestRate(uint mins) external  view returns(uint) {
-        return interestRates[mins];
-    }
-    
-    function getPositionById(uint id) external view returns(Staking memory) {
+    function getStakeById(uint id) public payable returns(Staking memory) {
         return stakes[id];
     }
     
-    function getStakesForAddress(address wallet) external view returns(uint[] memory) {
+    function getStakesForAddress(address wallet) public payable returns(uint[] memory) {
         return stakingIdsByAddress[wallet];
     }
     
-    function closeStaking(uint id) external {
+    function closeStaking(uint id) public payable {
         require(stakes[id].walletAddress == msg.sender, "You are not allowed to modify this stake");
         require(stakes[id].open == true, "Stake is already closed");
         
@@ -83,9 +78,9 @@ contract StakingApp {
         
         if(block.timestamp > stakes[id].releaseDate) {
             uint amount = stakes[id].amountStaked + stakes[id].amountInterest;
-            payable(msg.sender).call{value: amount}("");
+            payable(msg.sender).call{value: amount * 1 trx}("");
         } else {
-            payable(msg.sender).call{value: stakes[id].amountStaked}("");
+            payable(msg.sender).call{value: stakes[id].amountStaked * 1 trx}("");
         }
     }
 }
