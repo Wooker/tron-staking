@@ -7,7 +7,7 @@
 
 ### Get contract
 ```sh
-curl --request POST \                                                           16:39:11
+curl --request POST \ 
              --url https://nile.trongrid.io/wallet/getcontract \
              --header 'Accept: application/json' \
              --header 'Content-Type: application/json' \
