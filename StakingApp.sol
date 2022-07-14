@@ -70,7 +70,7 @@ contract StakingApp {
         return stakingIdsByAddress[wallet];
     }
     
-    function closeStaking(uint id) public payable {
+    function closeStake(uint id) public payable {
         require(stakes[id].walletAddress == msg.sender, "You are not allowed to modify this stake");
         require(stakes[id].open == true, "Stake is already closed");
         
