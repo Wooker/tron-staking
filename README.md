@@ -1,6 +1,6 @@
 # tron-staking
 
-Проверка функционала через [Tron-IDE](tronide.io) на Nile Testnet.
+Проверка функционала через [Tron-IDE](http://www.tronide.io/) на Nile Testnet.
 
 ### Smart Contract ID
 ```
